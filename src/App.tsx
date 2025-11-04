@@ -264,6 +264,7 @@ function App() {
       ) {
         await handleRecurringEdit(eventData as Event, recurringEditMode);
         setRecurringEditMode(null);
+        enqueueSnackbar('일정이 수정되었습니다', { variant: 'success' });
       } else {
         await saveEvent(eventData);
       }
