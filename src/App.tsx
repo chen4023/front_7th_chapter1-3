@@ -559,12 +559,11 @@ function App() {
           <FormControl fullWidth>
             <FormLabel id="category-label">카테고리</FormLabel>
             <Select
+              labelId="category-label"
               id="category"
               size="small"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              aria-labelledby="category-label"
-              aria-label="카테고리"
             >
               {categories.map((cat) => (
                 <MenuItem key={cat} value={cat} aria-label={`${cat}-option`}>
@@ -600,13 +599,13 @@ function App() {
           {isRepeating && !editingEvent && (
             <Stack spacing={2}>
               <FormControl fullWidth>
-                <FormLabel id='repeat-option'>반복 유형</FormLabel>
+                <FormLabel id="repeat-option">반복 유형</FormLabel>
                 <Select
+                  labelId="repeat-option"
                   id="repeat"
                   size="small"
                   value={repeatType}
                   onChange={(e) => setRepeatType(e.target.value as RepeatType)}
-                  aria-labelledby="repeat-option"
                 >
                   <MenuItem value="daily" aria-label="daily-option">
                     매일
@@ -651,12 +650,11 @@ function App() {
           <FormControl fullWidth>
             <FormLabel id="notification-label">알림 설정</FormLabel>
             <Select
+              labelId="notification-label"
               id="notification"
               size="small"
               value={notificationTime}
               onChange={(e) => setNotificationTime(Number(e.target.value))}
-              aria-labelledby="notification-label"
-              aria-label="알림 설정"
             >
               {notificationOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
