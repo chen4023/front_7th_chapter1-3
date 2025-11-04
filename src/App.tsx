@@ -599,12 +599,13 @@ function App() {
           {isRepeating && !editingEvent && (
             <Stack spacing={2}>
               <FormControl fullWidth>
-                <FormLabel>반복 유형</FormLabel>
+                <FormLabel id='repeat-option'>반복 유형</FormLabel>
                 <Select
+                  id="repeat"
                   size="small"
                   value={repeatType}
-                  aria-label="반복 유형"
                   onChange={(e) => setRepeatType(e.target.value as RepeatType)}
+                  aria-labelledby="repeat-option"
                 >
                   <MenuItem value="daily" aria-label="daily-option">
                     매일
@@ -647,12 +648,14 @@ function App() {
           )}
 
           <FormControl fullWidth>
-            <FormLabel htmlFor="notification">알림 설정</FormLabel>
+            <FormLabel id="notification-label">알림 설정</FormLabel>
             <Select
               id="notification"
               size="small"
               value={notificationTime}
               onChange={(e) => setNotificationTime(Number(e.target.value))}
+              aria-labelledby="notification-label"
+              aria-label="알림 설정"
             >
               {notificationOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
