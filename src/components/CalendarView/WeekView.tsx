@@ -1,4 +1,14 @@
-import { Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
+
 import { Event } from '../../types';
 import { formatWeek, getWeekDates } from '../../utils/dateUtils';
 import { EventBadge } from '../EventBadge';
@@ -10,12 +20,12 @@ interface WeekViewProps {
   weekDays: readonly string[];
 }
 
-export const WeekView: React.FC<WeekViewProps> = ({
+export const WeekView = ({
   currentDate,
   filteredEvents,
   notifiedEvents,
   weekDays,
-}) => {
+}: WeekViewProps) => {
   const weekDates = getWeekDates(currentDate);
 
   return (
@@ -64,4 +74,3 @@ export const WeekView: React.FC<WeekViewProps> = ({
     </Stack>
   );
 };
-

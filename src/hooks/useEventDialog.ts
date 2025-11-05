@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { Event } from '../types';
 
 export const useEventDialog = () => {
@@ -64,4 +65,3 @@ export const useEventDialog = () => {
     setRecurringEditMode,
   };
 };
-

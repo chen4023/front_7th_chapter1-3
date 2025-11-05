@@ -1,15 +1,17 @@
 import { Notifications, Repeat } from '@mui/icons-material';
 import { Box, Stack, Tooltip, Typography } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
+
 import { Event } from '../types';
 import { getRepeatTypeLabel } from '../utils/repeatTypeUtils';
 
 interface EventBadgeProps {
   event: Event;
   isNotified: boolean;
-  sx?: Record<string, any>;
+  sx?: SxProps<Theme>;
 }
 
-export const EventBadge: React.FC<EventBadgeProps> = ({ event, isNotified, sx = {} }) => {
+export const EventBadge = ({ event, isNotified, sx = {} }: EventBadgeProps) => {
   const isRepeating = event.repeat.type !== 'none';
 
   return (
@@ -45,4 +47,3 @@ export const EventBadge: React.FC<EventBadgeProps> = ({ event, isNotified, sx = 
     </Box>
   );
 };
-

@@ -1,6 +1,7 @@
 import { FormControl, FormLabel, Stack, TextField, Typography } from '@mui/material';
-import { Event } from '../../types';
+
 import { EventListItem } from './EventListItem';
+import { Event } from '../../types';
 
 interface EventListProps {
   events: Event[];
@@ -12,7 +13,7 @@ interface EventListProps {
   onDelete: (event: Event) => void;
 }
 
-export const EventList: React.FC<EventListProps> = ({
+export const EventList = ({
   events,
   searchTerm,
   onSearchChange,
@@ -20,9 +21,13 @@ export const EventList: React.FC<EventListProps> = ({
   notificationOptions,
   onEdit,
   onDelete,
-}) => {
+}: EventListProps) => {
   return (
-    <Stack data-testid="event-list" spacing={2} sx={{ width: '30%', height: '100%', overflowY: 'auto' }}>
+    <Stack
+      data-testid="event-list"
+      spacing={2}
+      sx={{ width: '30%', height: '100%', overflowY: 'auto' }}
+    >
       <FormControl fullWidth>
         <FormLabel htmlFor="search">일정 검색</FormLabel>
         <TextField
@@ -51,4 +56,3 @@ export const EventList: React.FC<EventListProps> = ({
     </Stack>
   );
 };
-

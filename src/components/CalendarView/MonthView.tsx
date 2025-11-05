@@ -1,4 +1,14 @@
-import { Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
+
 import { Event } from '../../types';
 import { formatDate, formatMonth, getEventsForDay, getWeeksAtMonth } from '../../utils/dateUtils';
 import { EventBadge } from '../EventBadge';
@@ -11,13 +21,13 @@ interface MonthViewProps {
   holidays: Record<string, string>;
 }
 
-export const MonthView: React.FC<MonthViewProps> = ({
+export const MonthView = ({
   currentDate,
   filteredEvents,
   notifiedEvents,
   weekDays,
   holidays,
-}) => {
+}: MonthViewProps) => {
   const weeks = getWeeksAtMonth(currentDate);
 
   return (
@@ -66,7 +76,9 @@ export const MonthView: React.FC<MonthViewProps> = ({
                           )}
                           {getEventsForDay(filteredEvents, day).map((event) => {
                             const isNotified = notifiedEvents.includes(event.id);
-                            return <EventBadge key={event.id} event={event} isNotified={isNotified} />;
+                            return (
+                              <EventBadge key={event.id} event={event} isNotified={isNotified} />
+                            );
                           })}
                         </>
                       )}
@@ -81,4 +93,3 @@ export const MonthView: React.FC<MonthViewProps> = ({
     </Stack>
   );
 };
-

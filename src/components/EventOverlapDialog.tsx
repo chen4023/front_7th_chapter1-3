@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material';
+
 import { Event } from '../types';
 
 interface EventOverlapDialogProps {
@@ -16,12 +17,12 @@ interface EventOverlapDialogProps {
   onConfirm: () => void;
 }
 
-export const EventOverlapDialog: React.FC<EventOverlapDialogProps> = ({
+export const EventOverlapDialog = ({
   open,
   overlappingEvents,
   onClose,
   onConfirm,
-}) => {
+}: EventOverlapDialogProps) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>일정 겹침 경고</DialogTitle>
@@ -43,4 +44,3 @@ export const EventOverlapDialog: React.FC<EventOverlapDialogProps> = ({
     </Dialog>
   );
 };
-

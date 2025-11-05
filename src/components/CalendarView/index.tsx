@@ -1,8 +1,9 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { IconButton, MenuItem, Select, Stack } from '@mui/material';
-import { Event } from '../../types';
+
 import { MonthView } from './MonthView';
 import { WeekView } from './WeekView';
+import { Event } from '../../types';
 
 interface CalendarViewProps {
   view: 'week' | 'month';
@@ -15,7 +16,7 @@ interface CalendarViewProps {
   weekDays: readonly string[];
 }
 
-export const CalendarView: React.FC<CalendarViewProps> = ({
+export const CalendarView = ({
   view,
   setView,
   currentDate,
@@ -24,7 +25,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   notifiedEvents,
   navigate,
   weekDays,
-}) => {
+}: CalendarViewProps) => {
   return (
     <>
       <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center">
@@ -69,4 +70,3 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     </>
   );
 };
-

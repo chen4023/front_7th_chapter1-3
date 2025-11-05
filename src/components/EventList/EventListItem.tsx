@@ -1,5 +1,6 @@
 import { Delete, Edit, Notifications, Repeat } from '@mui/icons-material';
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+
 import { Event } from '../../types';
 import { getRepeatTypeLabel } from '../../utils/repeatTypeUtils';
 
@@ -11,13 +12,13 @@ interface EventListItemProps {
   onDelete: (event: Event) => void;
 }
 
-export const EventListItem: React.FC<EventListItemProps> = ({
+export const EventListItem = ({
   event,
   isNotified,
   notificationOptions,
   onEdit,
   onDelete,
-}) => {
+}: EventListItemProps) => {
   return (
     <Box sx={{ border: 1, borderRadius: 2, p: 3, width: '100%' }}>
       <Stack direction="row" justifyContent="space-between">
@@ -33,7 +34,10 @@ export const EventListItem: React.FC<EventListItemProps> = ({
                 <Repeat fontSize="small" />
               </Tooltip>
             )}
-            <Typography fontWeight={isNotified ? 'bold' : 'normal'} color={isNotified ? 'error' : 'inherit'}>
+            <Typography
+              fontWeight={isNotified ? 'bold' : 'normal'}
+              color={isNotified ? 'error' : 'inherit'}
+            >
               {event.title}
             </Typography>
           </Stack>
@@ -56,7 +60,8 @@ export const EventListItem: React.FC<EventListItemProps> = ({
             </Typography>
           )}
           <Typography>
-            알림: {notificationOptions.find((option) => option.value === event.notificationTime)?.label}
+            알림:{' '}
+            {notificationOptions.find((option) => option.value === event.notificationTime)?.label}
           </Typography>
         </Stack>
         <Stack>
@@ -71,4 +76,3 @@ export const EventListItem: React.FC<EventListItemProps> = ({
     </Box>
   );
 };
-
