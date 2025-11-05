@@ -31,7 +31,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
 
 import RecurringEventDialog from './components/RecurringEventDialog.tsx';
 import { EventBadge } from './components/EventBadge';
@@ -42,6 +41,7 @@ import { useEventOperations } from './hooks/useEventOperations.ts';
 import { useNotifications } from './hooks/useNotifications.ts';
 import { useRecurringEventOperations } from './hooks/useRecurringEventOperations.ts';
 import { useSearch } from './hooks/useSearch.ts';
+import { useEventDialog } from './hooks/useEventDialog';
 import { Event, EventForm, RepeatType } from './types.ts';
 import {
   formatDate,
@@ -113,13 +113,23 @@ function App() {
   const { view, setView, currentDate, holidays, navigate } = useCalendarView();
   const { searchTerm, filteredEvents, setSearchTerm } = useSearch(events, currentDate, view);
 
-  const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
-  const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
-  const [isRecurringDialogOpen, setIsRecurringDialogOpen] = useState(false);
-  const [pendingRecurringEdit, setPendingRecurringEdit] = useState<Event | null>(null);
-  const [pendingRecurringDelete, setPendingRecurringDelete] = useState<Event | null>(null);
-  const [recurringEditMode, setRecurringEditMode] = useState<boolean | null>(null); // true = single, false = all
-  const [recurringDialogMode, setRecurringDialogMode] = useState<'edit' | 'delete'>('edit');
+  const {
+    isOverlapDialogOpen,
+    overlappingEvents,
+    openOverlapDialog,
+    closeOverlapDialog,
+    setIsOverlapDialogOpen,
+    setOverlappingEvents,
+    isRecurringDialogOpen,
+    pendingRecurringEdit,
+    pendingRecurringDelete,
+    recurringEditMode,
+    recurringDialogMode,
+    openRecurringEditDialog,
+    openRecurringDeleteDialog,
+    closeRecurringDialog,
+    setRecurringEditMode,
+  } = useEventDialog();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -128,8 +138,7 @@ function App() {
       // 편집 모드 저장하고 편집 폼으로 이동
       setRecurringEditMode(editSingleOnly);
       editEvent(pendingRecurringEdit);
-      setIsRecurringDialogOpen(false);
-      setPendingRecurringEdit(null);
+      closeRecurringDialog();
     } else if (recurringDialogMode === 'delete' && pendingRecurringDelete) {
       // 반복 일정 삭제 처리
       try {
@@ -139,17 +148,14 @@ function App() {
         console.error(error);
         enqueueSnackbar('일정 삭제 실패', { variant: 'error' });
       }
-      setIsRecurringDialogOpen(false);
-      setPendingRecurringDelete(null);
+      closeRecurringDialog();
     }
   };
 
   const handleEditEvent = (event: Event) => {
     if (isRecurringEvent(event)) {
       // Show recurring edit dialog
-      setPendingRecurringEdit(event);
-      setRecurringDialogMode('edit');
-      setIsRecurringDialogOpen(true);
+      openRecurringEditDialog(event);
     } else {
       // Regular event editing
       editEvent(event);
@@ -159,9 +165,7 @@ function App() {
   const handleDeleteEvent = (event: Event) => {
     if (isRecurringEvent(event)) {
       // Show recurring delete dialog
-      setPendingRecurringDelete(event);
-      setRecurringDialogMode('delete');
-      setIsRecurringDialogOpen(true);
+      openRecurringDeleteDialog(event);
     } else {
       // Regular event deletion
       deleteEvent(event.id);
@@ -204,8 +208,7 @@ function App() {
     // 수정
     if (editingEvent) {
       if (hasOverlapEvent) {
-        setOverlappingEvents(overlapping);
-        setIsOverlapDialogOpen(true);
+        openOverlapDialog(overlapping);
         return;
       }
 
@@ -234,8 +237,7 @@ function App() {
     }
 
     if (hasOverlapEvent) {
-      setOverlappingEvents(overlapping);
-      setIsOverlapDialogOpen(true);
+      openOverlapDialog(overlapping);
       return;
     }
 
@@ -670,9 +672,9 @@ function App() {
       <EventOverlapDialog
         open={isOverlapDialogOpen}
         overlappingEvents={overlappingEvents}
-        onClose={() => setIsOverlapDialogOpen(false)}
+        onClose={closeOverlapDialog}
         onConfirm={() => {
-          setIsOverlapDialogOpen(false);
+          closeOverlapDialog();
           saveEvent({
             id: editingEvent ? editingEvent.id : undefined,
             title,
@@ -694,11 +696,7 @@ function App() {
 
       <RecurringEventDialog
         open={isRecurringDialogOpen}
-        onClose={() => {
-          setIsRecurringDialogOpen(false);
-          setPendingRecurringEdit(null);
-          setPendingRecurringDelete(null);
-        }}
+        onClose={closeRecurringDialog}
         onConfirm={handleRecurringConfirm}
         event={recurringDialogMode === 'edit' ? pendingRecurringEdit : pendingRecurringDelete}
         mode={recurringDialogMode}
