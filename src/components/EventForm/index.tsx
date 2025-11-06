@@ -16,7 +16,7 @@ import React from 'react';
 import { Event, RepeatType } from '../../types';
 import { TimeValidationResult } from '../../utils/timeValidation';
 
-interface EventFormProps {
+export interface EventFormProps {
   // Form state
   title: string;
   setTitle: (value: string) => void;
