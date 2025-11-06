@@ -252,11 +252,10 @@ describe('반복 일정 회귀 테스트', () => {
       await user.type(screen.getByLabelText('설명'), '반복 일정');
       await user.type(screen.getByLabelText('위치'), '회의실 B');
       await user.click(screen.getByLabelText('카테고리'));
-      await user.click(within(screen.getByLabelText('카테고리')).getByRole('combobox'));
       await user.click(screen.getByRole('option', { name: '업무-option' }));
 
       await user.click(screen.getByLabelText('반복 일정'));
-      await user.click(within(screen.getByLabelText('반복 유형')).getByRole('combobox'));
+      await user.click(screen.getByLabelText('반복 유형'));
       await user.click(screen.getByRole('option', { name: 'daily-option' }));
 
       await user.click(screen.getByTestId('event-submit-button'));
