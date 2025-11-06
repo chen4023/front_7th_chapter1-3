@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('검색 및 필터링 E2E 테스트', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, request }) => {
+    // 각 테스트 전에 데이터 초기화
+    await request.post('http://localhost:3000/api/reset');
+
     await page.goto('/');
     // 준비 완료 대기
     await expect(page.getByText('일정 로딩 완료!').first()).toBeVisible();

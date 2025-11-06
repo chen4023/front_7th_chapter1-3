@@ -5,7 +5,7 @@ import { MonthView } from './MonthView';
 import { WeekView } from './WeekView';
 import { Event } from '../../types';
 
-interface CalendarViewProps {
+export interface CalendarViewProps {
   view: 'week' | 'month';
   setView: (view: 'week' | 'month') => void;
   currentDate: Date;

@@ -2,14 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('알림 시스템 E2E 테스트', () => {
   test.beforeEach(async ({ page, request }) => {
-    // 각 테스트 전에 모든 일정 삭제
-    const res = await request.get('http://localhost:3000/api/events');
-    const data = await res.json();
-    if (data.events && data.events.length > 0) {
-      for (const event of data.events) {
-        await request.delete(`http://localhost:3000/api/events/${event.id}`);
-      }
-    }
+    // 각 테스트 전에 데이터 초기화
+    await request.post('http://localhost:3000/api/reset');
 
     await page.goto('/');
     await expect(page.getByText('일정 로딩 완료!').first()).toBeVisible();
@@ -85,6 +79,13 @@ test.describe('알림 시스템 E2E 테스트', () => {
 
     await page.getByTestId('event-submit-button').click();
 
+    // 일정 추가 완료 대기
+    const addToast = page.getByRole('alert').filter({ hasText: '일정이 추가되었습니다' });
+    await expect(addToast).toBeVisible({ timeout: 5000 });
+
+    // 토스트와 알림이 겹치지 않도록 잠시 대기
+    await page.waitForTimeout(2000);
+
     // 알림이 표시될 때까지 대기
     const notification = page
       .getByRole('alert')
@@ -152,9 +153,11 @@ test.describe('알림 시스템 E2E 테스트', () => {
     await page.getByTestId('event-submit-button').click();
 
     // 첫 번째 일정 추가 완료 대기
-    await expect(page.getByRole('alert').filter({ hasText: '일정이 추가되었습니다' })).toBeVisible({
-      timeout: 5000,
-    });
+    const addToast1 = page.getByRole('alert').filter({ hasText: '일정이 추가되었습니다' });
+    await expect(addToast1).toBeVisible({ timeout: 5000 });
+
+    // 토스트와 폼이 충돌하지 않도록 잠시 대기
+    await page.waitForTimeout(2000);
 
     // 두 번째 일정: 2시간 후 (10분 전 알림 범위 밖 → 표시 안됨)
     const futureTime2 = new Date(now.getTime() + 2 * 60 * 60 * 1000);
@@ -175,9 +178,11 @@ test.describe('알림 시스템 E2E 테스트', () => {
     await page.getByTestId('event-submit-button').click();
 
     // 두 번째 일정 추가 완료 대기
-    await expect(page.getByRole('alert').filter({ hasText: '일정이 추가되었습니다' })).toBeVisible({
-      timeout: 5000,
-    });
+    const addToast2 = page.getByRole('alert').filter({ hasText: '일정이 추가되었습니다' });
+    await expect(addToast2).toBeVisible({ timeout: 5000 });
+
+    // 토스트가 알림과 겹치지 않도록 잠시 대기
+    await page.waitForTimeout(2000);
 
     // '곧 시작 일정' 알림은 표시됨
     await expect(

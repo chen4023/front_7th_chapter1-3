@@ -6,7 +6,7 @@ import React from 'react';
 import { Event } from '../types';
 import { getRepeatTypeLabel } from '../utils/repeatTypeUtils';
 
-interface EventBadgeProps {
+export interface EventBadgeProps {
   event: Event;
   isNotified: boolean;
   sx?: SxProps<Theme>;

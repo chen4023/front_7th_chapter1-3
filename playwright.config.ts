@@ -3,7 +3,8 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: 'e2e',
   timeout: 30_000,
-  fullyParallel: false, // 병렬 실행 여부
+  fullyParallel: false, // 파일 간 순차 실행 (데이터 충돌 방지)
+  workers: 1, // 단일 worker로 실행
   retries: 0, // 실패 테스트 재시도 횟수
   use: {
     // 공통으로 사용하는 브라우저 설정

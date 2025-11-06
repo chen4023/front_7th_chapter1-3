@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe.serial('반복 일정 관리', () => {
+  // 테스트 파일 시작 시 한 번만 데이터 초기화
+  test.beforeAll(async ({ request }) => {
+    await request.post('http://localhost:3000/api/reset');
+  });
+
   test('반복 일정 정보를 입력하고 추가 버튼을 클릭하면 여러 개의 반복 일정이 생성된다', async ({
     page,
   }) => {
@@ -40,12 +45,20 @@ test.describe.serial('반복 일정 관리', () => {
 
     const list = page.getByTestId('event-list');
 
+    // 반복 일정이 3개 있는지 먼저 확인
+    await expect(list.getByText('E2E 반복 테스트')).toHaveCount(3);
+
     // 반복 일정 수정 시도
     await list.getByLabel('Edit event').first().click();
-    await expect(page.getByText('반복 일정 수정')).toBeVisible();
+    
+    // 반복 일정 수정 다이얼로그가 나타날 때까지 대기
+    await expect(page.getByText('반복 일정 수정')).toBeVisible({ timeout: 5000 });
 
     // 아니오 선택 (시리즈 전체 수정)
     await page.getByRole('button', { name: '아니오' }).click();
+
+    // 다이얼로그가 닫힐 때까지 대기
+    await expect(page.getByText('반복 일정 수정')).not.toBeVisible({ timeout: 3000 });
 
     // 제목 변경
     const titleInput = page.getByLabel('제목');

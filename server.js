@@ -191,6 +191,19 @@ app.delete('/api/recurring-events/:repeatId', async (req, res) => {
   res.status(204).send();
 });
 
+// 테스트용 리셋 API
+app.post('/api/reset', async (req, res) => {
+  if (process.env.TEST_ENV === 'e2e') {
+    fs.writeFileSync(
+      `${__dirname}/src/__mocks__/response/${dbName}`,
+      JSON.stringify({ events: [] })
+    );
+    res.status(200).json({ message: 'Data reset successfully' });
+  } else {
+    res.status(403).json({ message: 'Reset only available in test environment' });
+  }
+});
+
 app.listen(port, () => {
   if (!fs.existsSync(`${__dirname}/src/__mocks__/response/${dbName}`)) {
     fs.writeFileSync(

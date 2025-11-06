@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe.serial('기본 일정 관리', () => {
+  // 테스트 파일 시작 시 한 번만 데이터 초기화
+  test.beforeAll(async ({ request }) => {
+    await request.post('http://localhost:3000/api/reset');
+  });
+
   test('일정 정보를 입력하고 추가 버튼을 클릭하면 새로운 일정이 생성된다', async ({ page }) => {
     await page.goto('/');
 
