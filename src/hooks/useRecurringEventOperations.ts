@@ -217,9 +217,73 @@ export const useRecurringEventOperations = (events: Event[], updateEvents: () =>
     }
   };
 
+  /**
+   * Calculates the day offset between two dates
+   */
+  const calculateDayOffset = (fromDate: string, toDate: string): number => {
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    const diffTime = to.getTime() - from.getTime();
+    return Math.round(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  /**
+   * Adds days to a date string and returns new date string
+   */
+  const addDaysToDate = (dateString: string, days: number): string => {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + days);
+    return date.toISOString().split('T')[0];
+  };
+
+  /**
+   * Handles moving recurring events with user choice for scope
+   * @param eventToMove - The event to be moved
+   * @param targetDate - The target date to move to
+   * @param moveSingleOnly - true for single event move, false for series move
+   */
+  const handleRecurringMove = async (
+    eventToMove: Event,
+    targetDate: string,
+    moveSingleOnly: boolean
+  ): Promise<void> => {
+    const relatedEvents = findRelatedRecurringEvents(eventToMove);
+
+    // If no related events (standalone event), just move it
+    if (relatedEvents.length === 0) {
+      const movedEvent = { ...eventToMove, date: targetDate };
+      await updateEventOnServer(movedEvent);
+      updateEvents([]);
+      return;
+    }
+
+    // Move single event only - convert to non-recurring
+    if (moveSingleOnly) {
+      const singleEvent = {
+        ...eventToMove,
+        date: targetDate,
+        repeat: DEFAULT_REPEAT_CONFIG,
+      };
+      await updateEventOnServer(singleEvent);
+      updateEvents([]);
+      return;
+    }
+
+    // Move all recurring events by maintaining relative day offset
+    const dayOffset = calculateDayOffset(eventToMove.date, targetDate);
+    const updatePromises = relatedEvents.map((event) => {
+      const newDate = addDaysToDate(event.date, dayOffset);
+      return updateEventOnServer({ ...event, date: newDate });
+    });
+
+    await Promise.all(updatePromises);
+    updateEvents([]);
+  };
+
   return {
     handleRecurringEdit,
     handleRecurringDelete,
+    handleRecurringMove,
     findRelatedRecurringEvents,
   };
 };

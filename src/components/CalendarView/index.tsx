@@ -14,6 +14,8 @@ interface CalendarViewProps {
   notifiedEvents: string[];
   navigate: (direction: 'prev' | 'next') => void;
   weekDays: readonly string[];
+  onEventDragStart?: (event: Event) => void;
+  onEventDrop?: (targetDate: string) => void;
 }
 
 export const CalendarView = ({
@@ -25,6 +27,8 @@ export const CalendarView = ({
   notifiedEvents,
   navigate,
   weekDays,
+  onEventDragStart,
+  onEventDrop,
 }: CalendarViewProps) => {
   return (
     <>
@@ -56,6 +60,8 @@ export const CalendarView = ({
           filteredEvents={filteredEvents}
           notifiedEvents={notifiedEvents}
           weekDays={weekDays}
+          onEventDragStart={onEventDragStart}
+          onEventDrop={onEventDrop}
         />
       )}
       {view === 'month' && (
@@ -65,6 +71,8 @@ export const CalendarView = ({
           notifiedEvents={notifiedEvents}
           weekDays={weekDays}
           holidays={holidays}
+          onEventDragStart={onEventDragStart}
+          onEventDrop={onEventDrop}
         />
       )}
     </>

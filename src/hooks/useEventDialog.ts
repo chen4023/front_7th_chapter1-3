@@ -12,7 +12,9 @@ export const useEventDialog = () => {
   const [pendingRecurringEdit, setPendingRecurringEdit] = useState<Event | null>(null);
   const [pendingRecurringDelete, setPendingRecurringDelete] = useState<Event | null>(null);
   const [recurringEditMode, setRecurringEditMode] = useState<boolean | null>(null);
-  const [recurringDialogMode, setRecurringDialogMode] = useState<'edit' | 'delete'>('edit');
+  const [recurringDialogMode, setRecurringDialogMode] = useState<'edit' | 'delete' | 'move'>(
+    'edit'
+  );
 
   // Overlap Dialog Actions
   const openOverlapDialog = (events: Event[]) => {

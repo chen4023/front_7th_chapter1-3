@@ -1,6 +1,7 @@
 import { Close } from '@mui/icons-material';
 import { Alert, AlertTitle, Box, IconButton, Stack, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 
 import { CalendarView } from './components/CalendarView';
 import { EventForm as EventFormComponent } from './components/EventForm';
@@ -65,13 +66,11 @@ function App() {
     () => setEditingEvent(null)
   );
 
-  const { handleRecurringEdit, handleRecurringDelete } = useRecurringEventOperations(
-    events,
-    async () => {
+  const { handleRecurringEdit, handleRecurringDelete, handleRecurringMove } =
+    useRecurringEventOperations(events, async () => {
       // After recurring edit, refresh events from server
       await fetchEvents();
-    }
-  );
+    });
 
   const { notifications, notifiedEvents, setNotifications } = useNotifications(events);
   const { view, setView, currentDate, holidays, navigate } = useCalendarView();
@@ -95,6 +94,14 @@ function App() {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  // Drag and Drop state
+  const [draggedEvent, setDraggedEvent] = useState<Event | null>(null);
+  const [pendingMove, setPendingMove] = useState<{
+    event: Event;
+    targetDate: string;
+  } | null>(null);
+  const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
+
   const handleRecurringConfirm = async (editSingleOnly: boolean) => {
     if (recurringDialogMode === 'edit' && pendingRecurringEdit) {
       // 편집 모드 저장하고 편집 폼으로 이동
@@ -112,6 +119,68 @@ function App() {
       }
       closeRecurringDialog();
     }
+  };
+
+  const handleEventDragStart = (event: Event) => {
+    setDraggedEvent(event);
+  };
+
+  const handleEventDrop = async (targetDate: string) => {
+    if (!draggedEvent) return;
+
+    // Same date, no move needed
+    if (draggedEvent.date === targetDate) {
+      setDraggedEvent(null);
+      return;
+    }
+
+    // Check if it's a recurring event
+    if (isRecurringEvent(draggedEvent)) {
+      setPendingMove({ event: draggedEvent, targetDate });
+      setIsMoveDialogOpen(true);
+    } else {
+      // Non-recurring event, just update the date
+      try {
+        const movedEvent = { ...draggedEvent, date: targetDate };
+        const response = await fetch(`/api/events/${draggedEvent.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(movedEvent),
+        });
+
+        if (response.ok) {
+          await fetchEvents();
+          enqueueSnackbar('일정이 이동되었습니다', { variant: 'success' });
+        } else {
+          throw new Error('Failed to move event');
+        }
+      } catch (error) {
+        console.error(error);
+        enqueueSnackbar('일정 이동 실패', { variant: 'error' });
+      }
+    }
+
+    setDraggedEvent(null);
+  };
+
+  const closeMoveDialog = () => {
+    setIsMoveDialogOpen(false);
+    setPendingMove(null);
+    setDraggedEvent(null);
+  };
+
+  const handleMoveConfirm = async (moveSingleOnly: boolean) => {
+    if (!pendingMove) return;
+
+    try {
+      await handleRecurringMove(pendingMove.event, pendingMove.targetDate, moveSingleOnly);
+      enqueueSnackbar('일정이 이동되었습니다', { variant: 'success' });
+    } catch (error) {
+      console.error(error);
+      enqueueSnackbar('일정 이동 실패', { variant: 'error' });
+    }
+
+    closeMoveDialog();
   };
 
   const handleEditEvent = (event: Event) => {
@@ -256,6 +325,8 @@ function App() {
             notifiedEvents={notifiedEvents}
             navigate={navigate}
             weekDays={weekDays}
+            onEventDragStart={handleEventDragStart}
+            onEventDrop={handleEventDrop}
           />
         </Stack>
 
@@ -301,6 +372,14 @@ function App() {
         onConfirm={handleRecurringConfirm}
         event={recurringDialogMode === 'edit' ? pendingRecurringEdit : pendingRecurringDelete}
         mode={recurringDialogMode}
+      />
+
+      <RecurringEventDialog
+        open={isMoveDialogOpen}
+        onClose={closeMoveDialog}
+        onConfirm={handleMoveConfirm}
+        event={pendingMove?.event || null}
+        mode="move"
       />
 
       {notifications.length > 0 && (

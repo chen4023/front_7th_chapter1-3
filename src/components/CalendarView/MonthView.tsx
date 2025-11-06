@@ -8,6 +8,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import React, { useState } from 'react';
 
 import { Event } from '../../types';
 import { formatDate, formatMonth, getEventsForDay, getWeeksAtMonth } from '../../utils/dateUtils';
@@ -19,6 +20,8 @@ interface MonthViewProps {
   notifiedEvents: string[];
   weekDays: readonly string[];
   holidays: Record<string, string>;
+  onEventDragStart?: (event: Event) => void;
+  onEventDrop?: (targetDate: string) => void;
 }
 
 export const MonthView = ({
@@ -27,8 +30,28 @@ export const MonthView = ({
   notifiedEvents,
   weekDays,
   holidays,
+  onEventDragStart,
+  onEventDrop,
 }: MonthViewProps) => {
   const weeks = getWeeksAtMonth(currentDate);
+  const [dragOverCell, setDragOverCell] = useState<string | null>(null);
+
+  const handleDragOver = (e: React.DragEvent, dateString: string) => {
+    e.preventDefault();
+    setDragOverCell(dateString);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverCell(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dateString: string) => {
+    e.preventDefault();
+    setDragOverCell(null);
+    if (onEventDrop) {
+      onEventDrop(dateString);
+    }
+  };
 
   return (
     <Stack data-testid="month-view" spacing={4} sx={{ width: '100%' }}>
@@ -51,9 +74,14 @@ export const MonthView = ({
                   const dateString = day ? formatDate(currentDate, day) : '';
                   const holiday = holidays[dateString];
 
+                  const isDragOver = dragOverCell === dateString;
+
                   return (
                     <TableCell
                       key={dayIndex}
+                      onDragOver={(e) => day && handleDragOver(e, dateString)}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => day && handleDrop(e, dateString)}
                       sx={{
                         height: '120px',
                         verticalAlign: 'top',
@@ -62,6 +90,8 @@ export const MonthView = ({
                         border: '1px solid #e0e0e0',
                         overflow: 'hidden',
                         position: 'relative',
+                        backgroundColor: isDragOver ? '#e3f2fd' : 'inherit',
+                        transition: 'background-color 0.2s',
                       }}
                     >
                       {day && (
@@ -77,7 +107,12 @@ export const MonthView = ({
                           {getEventsForDay(filteredEvents, day).map((event) => {
                             const isNotified = notifiedEvents.includes(event.id);
                             return (
-                              <EventBadge key={event.id} event={event} isNotified={isNotified} />
+                              <EventBadge
+                                key={event.id}
+                                event={event}
+                                isNotified={isNotified}
+                                onDragStart={onEventDragStart}
+                              />
                             );
                           })}
                         </>

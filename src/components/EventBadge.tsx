@@ -9,13 +9,23 @@ interface EventBadgeProps {
   event: Event;
   isNotified: boolean;
   sx?: SxProps<Theme>;
+  onDragStart?: (event: Event) => void;
 }
 
-export const EventBadge = ({ event, isNotified, sx = {} }: EventBadgeProps) => {
+export const EventBadge = ({ event, isNotified, sx = {}, onDragStart }: EventBadgeProps) => {
   const isRepeating = event.repeat.type !== 'none';
+
+  const handleDragStart = (e: React.DragEvent) => {
+    e.stopPropagation();
+    if (onDragStart) {
+      onDragStart(event);
+    }
+  };
 
   return (
     <Box
+      draggable={!!onDragStart}
+      onDragStart={handleDragStart}
       sx={{
         p: 0.5,
         my: 0.5,
@@ -26,6 +36,12 @@ export const EventBadge = ({ event, isNotified, sx = {} }: EventBadgeProps) => {
         minHeight: '18px',
         width: '100%',
         overflow: 'hidden',
+        cursor: onDragStart ? 'grab' : 'default',
+        '&:active': onDragStart
+          ? {
+              cursor: 'grabbing',
+            }
+          : {},
         ...sx,
       }}
     >
