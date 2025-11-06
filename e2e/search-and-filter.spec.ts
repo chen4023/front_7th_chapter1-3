@@ -22,7 +22,10 @@ test.describe('검색 및 필터링 E2E 테스트', () => {
     const futureTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
     const hours = String(futureTime.getHours()).padStart(2, '0');
     const minutes = String(futureTime.getMinutes()).padStart(2, '0');
-    const endHours = String(futureTime.getHours() + 1).padStart(2, '0');
+
+    // 종료 시간: 시작 시간 + 1시간 (24시 넘으면 다음날로 처리)
+    const endTime = new Date(futureTime.getTime() + 60 * 60 * 1000);
+    const endHours = String(endTime.getHours()).padStart(2, '0');
     const eventDate = futureTime.toISOString().split('T')[0];
 
     // 첫 번째 일정 생성
@@ -52,7 +55,10 @@ test.describe('검색 및 필터링 E2E 테스트', () => {
     const futureTime2 = new Date(futureTime.getTime() + 60 * 60 * 1000);
     const hours2 = String(futureTime2.getHours()).padStart(2, '0');
     const minutes2 = String(futureTime2.getMinutes()).padStart(2, '0');
-    const endHours2 = String(futureTime2.getHours() + 1).padStart(2, '0');
+
+    // 종료 시간: 시작 시간 + 1시간
+    const endTime2 = new Date(futureTime2.getTime() + 60 * 60 * 1000);
+    const endHours2 = String(endTime2.getHours()).padStart(2, '0');
 
     await page.getByLabel('제목').fill('개인 작업');
     await page.getByLabel('날짜').fill(eventDate);

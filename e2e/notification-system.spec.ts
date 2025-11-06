@@ -25,7 +25,10 @@ test.describe('알림 시스템 E2E 테스트', () => {
     const futureTime = new Date(now.getTime() + 9 * 60 * 1000);
     const hours = String(futureTime.getHours()).padStart(2, '0');
     const minutes = String(futureTime.getMinutes()).padStart(2, '0');
-    const endHours = String(futureTime.getHours() + 1).padStart(2, '0');
+
+    // 종료 시간: 시작 시간 + 1시간
+    const endTime = new Date(futureTime.getTime() + 60 * 60 * 1000);
+    const endHours = String(endTime.getHours()).padStart(2, '0');
     const eventDate = `${futureTime.getFullYear()}-${String(futureTime.getMonth() + 1).padStart(2, '0')}-${String(futureTime.getDate()).padStart(2, '0')}`;
 
     await page.getByLabel('제목').fill('알림 테스트');
@@ -63,7 +66,10 @@ test.describe('알림 시스템 E2E 테스트', () => {
     const futureTime = new Date(now.getTime() + 9 * 60 * 1000);
     const hours = String(futureTime.getHours()).padStart(2, '0');
     const minutes = String(futureTime.getMinutes()).padStart(2, '0');
-    const endHours = String(futureTime.getHours() + 1).padStart(2, '0');
+
+    // 종료 시간: 시작 시간 + 1시간
+    const endTime = new Date(futureTime.getTime() + 60 * 60 * 1000);
+    const endHours = String(endTime.getHours()).padStart(2, '0');
     const eventDate = `${futureTime.getFullYear()}-${String(futureTime.getMonth() + 1).padStart(2, '0')}-${String(futureTime.getDate()).padStart(2, '0')}`;
 
     await page.getByLabel('제목').fill('닫기 테스트');
