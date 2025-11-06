@@ -50,7 +50,6 @@ test.describe.serial('반복 일정 관리', () => {
 
     // 반복 일정 수정 시도
     await list.getByLabel('Edit event').first().click();
-    
     // 반복 일정 수정 다이얼로그가 나타날 때까지 대기
     await expect(page.getByText('반복 일정 수정')).toBeVisible({ timeout: 5000 });
 
