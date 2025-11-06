@@ -16,6 +16,7 @@ interface CalendarViewProps {
   weekDays: readonly string[];
   onEventDragStart?: (event: Event) => void;
   onEventDrop?: (targetDate: string) => void;
+  onDateClick?: (dateString: string) => void;
 }
 
 export const CalendarView = ({
@@ -29,6 +30,7 @@ export const CalendarView = ({
   weekDays,
   onEventDragStart,
   onEventDrop,
+  onDateClick,
 }: CalendarViewProps) => {
   return (
     <>
@@ -62,6 +64,7 @@ export const CalendarView = ({
           weekDays={weekDays}
           onEventDragStart={onEventDragStart}
           onEventDrop={onEventDrop}
+          onDateClick={onDateClick}
         />
       )}
       {view === 'month' && (
@@ -73,6 +76,7 @@ export const CalendarView = ({
           holidays={holidays}
           onEventDragStart={onEventDragStart}
           onEventDrop={onEventDrop}
+          onDateClick={onDateClick}
         />
       )}
     </>

@@ -10,9 +10,16 @@ interface EventBadgeProps {
   isNotified: boolean;
   sx?: SxProps<Theme>;
   onDragStart?: (event: Event) => void;
+  onDragEnd?: () => void;
 }
 
-export const EventBadge = ({ event, isNotified, sx = {}, onDragStart }: EventBadgeProps) => {
+export const EventBadge = ({
+  event,
+  isNotified,
+  sx = {},
+  onDragStart,
+  onDragEnd,
+}: EventBadgeProps) => {
   const isRepeating = event.repeat.type !== 'none';
 
   const handleDragStart = (e: React.DragEvent) => {
@@ -22,10 +29,19 @@ export const EventBadge = ({ event, isNotified, sx = {}, onDragStart }: EventBad
     }
   };
 
+  const handleDragEnd = (e: React.DragEvent) => {
+    e.stopPropagation();
+    if (onDragEnd) {
+      onDragEnd();
+    }
+  };
+
   return (
     <Box
+      data-event-badge
       draggable={!!onDragStart}
       onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       sx={{
         p: 0.5,
         my: 0.5,

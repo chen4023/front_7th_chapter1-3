@@ -203,6 +203,15 @@ function App() {
     }
   };
 
+  const handleDateClick = (dateString: string) => {
+    // 날짜 클릭 시 폼 초기화하고 해당 날짜로 설정
+    if (editingEvent) {
+      setEditingEvent(null);
+    }
+    resetForm();
+    setDate(dateString);
+  };
+
   const addOrUpdateEvent = async () => {
     if (!title || !date || !startTime || !endTime) {
       enqueueSnackbar('필수 정보를 모두 입력해주세요.', { variant: 'error' });
@@ -327,6 +336,7 @@ function App() {
             weekDays={weekDays}
             onEventDragStart={handleEventDragStart}
             onEventDrop={handleEventDrop}
+            onDateClick={handleDateClick}
           />
         </Stack>
 
