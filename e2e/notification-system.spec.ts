@@ -26,15 +26,16 @@ test.describe('알림 시스템 E2E 테스트', () => {
     const hours = String(futureTime.getHours()).padStart(2, '0');
     const minutes = String(futureTime.getMinutes()).padStart(2, '0');
 
-    // 종료 시간: 시작 시간 + 1시간
-    const endTime = new Date(futureTime.getTime() + 60 * 60 * 1000);
+    // 종료 시간: 시작 시간 + 30분 (자정 넘김 방지)
+    const endTime = new Date(futureTime.getTime() + 30 * 60 * 1000);
     const endHours = String(endTime.getHours()).padStart(2, '0');
+    const endMinutes = String(endTime.getMinutes()).padStart(2, '0');
     const eventDate = `${futureTime.getFullYear()}-${String(futureTime.getMonth() + 1).padStart(2, '0')}-${String(futureTime.getDate()).padStart(2, '0')}`;
 
     await page.getByLabel('제목').fill('알림 테스트');
     await page.getByLabel('날짜').fill(eventDate);
     await page.getByLabel('시작 시간').fill(`${hours}:${minutes}`);
-    await page.getByLabel('종료 시간').fill(`${endHours}:${minutes}`);
+    await page.getByLabel('종료 시간').fill(`${endHours}:${endMinutes}`);
     await page.getByLabel('설명').fill('알림 테스트 설명');
     await page.getByLabel('위치').fill('테스트 위치');
     await page.getByLabel('카테고리').click();
@@ -67,15 +68,16 @@ test.describe('알림 시스템 E2E 테스트', () => {
     const hours = String(futureTime.getHours()).padStart(2, '0');
     const minutes = String(futureTime.getMinutes()).padStart(2, '0');
 
-    // 종료 시간: 시작 시간 + 1시간
-    const endTime = new Date(futureTime.getTime() + 60 * 60 * 1000);
+    // 종료 시간: 시작 시간 + 30분 (자정 넘김 방지)
+    const endTime = new Date(futureTime.getTime() + 30 * 60 * 1000);
     const endHours = String(endTime.getHours()).padStart(2, '0');
+    const endMinutes = String(endTime.getMinutes()).padStart(2, '0');
     const eventDate = `${futureTime.getFullYear()}-${String(futureTime.getMonth() + 1).padStart(2, '0')}-${String(futureTime.getDate()).padStart(2, '0')}`;
 
     await page.getByLabel('제목').fill('닫기 테스트');
     await page.getByLabel('날짜').fill(eventDate);
     await page.getByLabel('시작 시간').fill(`${hours}:${minutes}`);
-    await page.getByLabel('종료 시간').fill(`${endHours}:${minutes}`);
+    await page.getByLabel('종료 시간').fill(`${endHours}:${endMinutes}`);
     await page.getByLabel('설명').fill('테스트');
     await page.getByLabel('위치').fill('테스트');
     await page.getByLabel('카테고리').click();
