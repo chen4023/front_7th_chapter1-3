@@ -1,6 +1,7 @@
 import { Notifications, Repeat } from '@mui/icons-material';
 import { Box, Stack, Tooltip, Typography } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
+import React from 'react';
 
 import { Event } from '../types';
 import { getRepeatTypeLabel } from '../utils/repeatTypeUtils';
