@@ -17,7 +17,7 @@ export default defineConfig({
   webServer: {
     command: 'TEST_ENV=e2e pnpm dev',
     url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI, // 이미 서버가 켜져있으면 새로켜지 않고 CI 환경에서만 새 서버를 띄움
+    // reuseExistingServer: !process.env.CI, // 이미 서버가 켜져있으면 새로켜지 않고 CI 환경에서만 새 서버를 띄움
     env: { TEST_ENV: 'e2e' }, // e2e 테스트 환경 명시
   },
   globalSetup: './e2e/global-setup.ts',
